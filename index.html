@@ -111,41 +111,22 @@
     animation: pulseGlow 2s infinite alternate;
   }
 
-  /* 🔊 PANEL DE AUDIO VERTICAL STYLE */
-  .audio-control-panel {
+  /* 🔊 BOTÓN DE MUTE (Esquina superior izquierda) */
+  .mute-container {
     position: fixed;
-    left: 25px;
-    bottom: 25px;
-    z-index: 150;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
+    top: 20px;
+    left: 20px;
+    z-index: 100;
     background: rgba(255, 255, 255, 0.4);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    padding: 16px 12px;
-    border-radius: 30px;
+    padding: 6px;
+    border-radius: 50%;
     border: 1px solid rgba(255, 255, 255, 0.6);
     box-shadow: 0 8px 32px rgba(145, 165, 185, 0.15);
-  }
-
-  .volume-slider-container {
-    height: 100px;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 5px 0;
-  }
-
-  .volume-slider {
-    -webkit-appearance: slider-vertical;
-    appearance: slider-vertical;
-    width: 8px;
-    height: 100%;
-    background: rgba(143, 161, 180, 0.3);
-    cursor: pointer;
-    outline: none;
   }
 
   .mute-btn {
@@ -157,8 +138,8 @@
     align-items: center;
     justify-content: center;
     transition: color 0.3s, transform 0.2s;
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
   }
 
   .mute-btn:hover {
@@ -479,8 +460,8 @@
     .subtitle { margin-bottom: 8px; }
     .door-notice-box { margin-bottom: 20px; padding: 10px 12px; font-size: 10.5px; }
     input[type="text"], input[type="email"], input[type="tel"] { padding: 12px 16px; font-size: 15px; }
-    .audio-control-panel { left: 15px; bottom: 15px; padding: 12px 8px; }
-    .volume-slider-container { height: 80px; }
+    .mute-container { left: 15px; top: 15px; padding: 4px; }
+    .mute-btn { width: 24px; height: 24px; }
     .whatsapp-btn-container { margin-top: 20px; }
   }
 
@@ -515,11 +496,8 @@
   <div class="video-overlay"></div>
 </div>
 
-<!-- 🔊 PANEL DE AUDIO -->
-<div class="audio-control-panel">
-  <div class="volume-slider-container">
-    <input type="range" min="0" max="1" step="0.01" value="0.35" class="volume-slider" id="volumeControl" oninput="adjustVolume(this.value)">
-  </div>
+<!-- 🔊 CONTROL DE MUTE ÚNICO (Top Left) -->
+<div class="mute-container">
   <button class="mute-btn" id="muteButton" onclick="toggleMute()">
     <svg viewBox="0 0 24 24" id="audioIcon">
       <path d="M3 9v6h4l5 5V4TL7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
@@ -644,11 +622,11 @@ setInterval(() => {
   }).catch(()=>{});
 }, 10000);
 
-// 🎵 AUDIO ENGINE
+// 🎵 AUDIO ENGINE (Volumen por defecto fijo a 0.35)
 let audioCtx = null;
 let audioBuffers = [];
 let gainNodeNode = null;
-let masterVolume = 0.35; 
+const masterVolume = 0.35; 
 let isMuted = false;
 let experienceStarted = false;
 let loopTimeout = null;
@@ -713,29 +691,16 @@ function startExperience() {
   initAudioEngine();
 }
 
-function adjustVolume(val) {
-  masterVolume = parseFloat(val);
-  if (isMuted && masterVolume > 0) { isMuted = false; updateMuteIcon(false); }
-  if (gainNodeNode && audioCtx) {
-    if (audioCtx.state === 'suspended') audioCtx.resume();
-    gainNodeNode.gain.setValueAtTime(masterVolume, audioCtx.currentTime);
-  }
-}
-
 function toggleMute() {
   isMuted = !isMuted;
-  const slider = document.getElementById('volumeControl');
   if (isMuted) {
     if (gainNodeNode && audioCtx) gainNodeNode.gain.setValueAtTime(0, audioCtx.currentTime);
-    slider.value = 0;
     updateMuteIcon(true);
   } else {
-    if (masterVolume === 0) masterVolume = 0.35; 
     if (gainNodeNode && audioCtx) {
       if (audioCtx.state === 'suspended') audioCtx.resume();
       gainNodeNode.gain.setValueAtTime(masterVolume, audioCtx.currentTime);
     }
-    slider.value = masterVolume;
     updateMuteIcon(false);
   }
 }
