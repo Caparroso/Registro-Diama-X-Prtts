@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DIAMA X PRRTS - Registration</title>
+
+<style>
+  /* 🌐 ESTÉTICA ULTRA-SOFT & GLASS INSPIRADA EN OWSLA */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+    user-select: none;
+  }
+
+  body {
+    background: #dbe4ee;
+    color: #4a5866;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 15px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* 🌌 CONTENEDOR DEL VIDEO DE FONDO INMERSIVO */
+  .video-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    overflow: hidden;
+    background: radial-gradient(circle at center, #f5f8fa 0%, #dbe4ee 100%);
+  }
+
+  .bg-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: translate(-50%, -50%);
+    transition: opacity 1.5s ease-in-out;
+    opacity: 0;
+  }
+
+  .bg-video.visible {
+    opacity: 1;
+  }
+
+  .video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(219, 228, 238, 0.25);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    pointer-events: none;
+  }
+
+  /* 🧊 OVERLAY CRISTALINO FINO DE ENTRADA (Activador de Audio) */
+  #intro-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(220, 230, 242, 0.3) 100%);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: opacity 1.2s cubic-bezier(0.25, 1, 0.5, 1), transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  #intro-overlay.fade-out {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(1.03);
+  }
+
+  .intro-title {
+    font-size: 28px;
+    font-weight: bold;
+    letter-spacing: 6px;
+    color: #5a6b7c;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+    text-shadow: 0 2px 10px rgba(145, 165, 185, 0.2);
+  }
+
+  .intro-sub {
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    color: #8fa1b4;
+    text-transform: uppercase;
+    animation: pulseGlow 2s infinite alternate;
+  }
+
+  /* 🔊 PANEL DE AUDIO VERTICAL STYLE */
+  .audio-control-panel {
+    position: fixed;
+    left: 25px;
+    bottom: 25px;
+    z-index: 150;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 16px 12px;
+    border-radius: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 8px 32px rgba(145, 165, 185, 0.15);
+  }
+
+  .volume-slider-container {
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 0;
+  }
+
+  .volume-slider {
+    -webkit-appearance: slider-vertical;
+    appearance: slider-vertical;
+    width: 8px;
+    height: 100%;
+    background: rgba(143, 161, 180, 0.3);
+    cursor: pointer;
+    outline: none;
+  }
+
+  .mute-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #7a8a9e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.3s, transform 0.2s;
+    width: 24px;
+    height: 24px;
+  }
+
+  .mute-btn:hover {
+    color: #00c2cb;
+    transform: scale(1.1);
+  }
+
+  .mute-btn svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+  }
+
+  /* 🌐 SELECTOR DE IDIOMA */
+  #language-selector {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 100;
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 4px;
+    border-radius: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    display: flex;
+    gap: 4px;
+    box-shadow: 0 8px 32px rgba(145, 165, 185, 0.15);
+  }
+
+  .lang-btn {
+    padding: 6px 16px;
+    font-size: 11px;
+    font-weight: bold;
+    border-radius: 20px;
+    border: none;
+    background: transparent;
+    color: #7a8a9e;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  .lang-btn.active {
+    background: rgba(255, 255, 255, 0.9);
+    color: #00c2cb;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  }
+
+  /* 🫧 CONTENEDOR VITREO OPTIMIZADO */
+  .container {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.35) 0%, rgba(240, 245, 250, 0.2) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 40px;
+    padding: 45px 30px;
+    width: 100%;
+    max-width: 480px;
+    box-shadow: 
+      0 4px 30px rgba(0, 0, 0, 0.02),
+      0 20px 50px rgba(145, 165, 185, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    text-align: center;
+    position: relative;
+    z-index: 10;
+    transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  /* 🌌 BRANDING */
+  .brand-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    margin-bottom: 25px;
+    padding: 0 10px;
+    animation: smoothFloat 5s ease-in-out infinite alternate;
+  }
+
+  .logo-img {
+    height: 115px;
+    width: auto;
+    object-fit: contain;
+    filter: drop-shadow(0px 10px 20px rgba(145, 165, 185, 0.35));
+    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  .logo-img:hover {
+    transform: scale(1.04);
+  }
+
+  .part-x {
+    font-size: 32px;
+    font-weight: 900;
+    color: rgba(74, 88, 102, 0.5);
+    text-shadow: 0px 1px 2px rgba(255, 255, 255, 0.8);
+    font-family: Arial, sans-serif;
+  }
+
+  .subtitle {
+    font-size: 11px;
+    font-weight: bold;
+    color: #8fa1b4;
+    letter-spacing: 3px;
+    margin-bottom: 35px;
+    text-transform: uppercase;
+  }
+
+  /* 📋 INPUT FIELDS */
+  .input-group {
+    position: relative;
+    margin-bottom: 20px;
+    text-align: left;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #6a798a;
+    padding-left: 14px;
+    letter-spacing: 0.5px;
+  }
+
+  .optional-mark {
+    font-size: 10px;
+    color: #a3b2c2;
+    font-weight: normal;
+    font-style: italic;
+  }
+
+  input[type="text"], input[type="email"], input[type="tel"] {
+    width: 100%;
+    padding: 16px 22px;
+    background: rgba(255, 255, 255, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 30px;
+    color: #3b4854;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    box-shadow: 
+      inset 0 2px 4px rgba(145, 165, 185, 0.05),
+      0 4px 12px rgba(0, 0, 0, 0.01);
+  }
+
+  input[type="text"]:focus, input[type="email"]:focus, input[type="tel"]:focus {
+    background: rgba(255, 255, 255, 0.75);
+    border-color: rgba(0, 194, 203, 0.4);
+    box-shadow: 
+      0 8px 24px rgba(0, 194, 203, 0.08),
+      inset 0 1px 2px rgba(0,0,0,0.02);
+    transform: translateY(-1px);
+  }
+
+  /* 🔘 SUBMIT BUTTON */
+  button[type="submit"] {
+    margin-top: 15px;
+    width: 100%;
+    padding: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 30px;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.85) 0%, rgba(240,245,250,0.75) 100%);
+    color: #4a5866;
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+    box-shadow: 
+      0 8px 20px rgba(145, 165, 185, 0.15),
+      inset 0 1px 0 rgba(255,255,255,1);
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  button[type="submit"]:hover {
+    background: linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(227,237,245,0.85) 100%);
+    border-color: rgba(0, 194, 203, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(0, 194, 203, 0.12);
+  }
+
+  /* 🎟️ TICKET / CONFIRMACIÓN */
+  .ticket {
+    display: none;
+    margin-top: 5px;
+    padding: 30px 25px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    text-align: left;
+    animation: ticketUnfold 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  }
+
+  .ticket h2 {
+    text-align: center;
+    font-size: 19px;
+    letter-spacing: 2px;
+    color: #4a5866;
+    margin-bottom: 25px;
+    font-weight: bold;
+  }
+
+  .row {
+    margin-bottom: 18px;
+    border-bottom: 1px dashed rgba(176, 194, 212, 0.3);
+    padding-bottom: 12px;
+  }
+
+  .row:last-of-type {
+    border-bottom: none;
+    margin-bottom: 0;
+  }
+
+  .title {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    color: #9aaabf;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  .value {
+    margin-top: 5px;
+    font-size: 15px;
+    font-weight: bold;
+    color: #424e5a;
+  }
+
+  #folioText {
+    color: #00c2cb;
+    font-size: 22px;
+    font-family: monospace;
+    letter-spacing: 1px;
+  }
+
+  .notice {
+    margin-top: 30px;
+    text-align: center;
+    color: #8fa1b4;
+    font-size: 11px;
+    font-weight: bold;
+    line-height: 1.6;
+  }
+
+  /* 📱 RESPONSIVE */
+  @media (max-width: 480px) {
+    body { padding: 10px; }
+    .container { padding: 35px 20px; border-radius: 35px; }
+    .brand-container { gap: 14px; margin-bottom: 20px; }
+    .logo-img { height: 78px; }
+    .part-x { font-size: 24px; }
+    .subtitle { margin-bottom: 25px; }
+    input[type="text"], input[type="email"], input[type="tel"] { padding: 14px 18px; font-size: 16px; }
+    .audio-control-panel { left: 15px; bottom: 15px; padding: 12px 8px; }
+    .volume-slider-container { height: 80px; }
+  }
+
+  /* 🎬 ANIMACIONES */
+  @keyframes smoothFloat {
+    0% { transform: translateY(0px) rotate(0deg); }
+    100% { transform: translateY(-10px) rotate(0.5deg); }
+  }
+  @keyframes ticketUnfold {
+    from { opacity: 0; transform: translateY(20px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes pulseGlow {
+    0% { opacity: 0.5; }
+    100% { opacity: 1; }
+  }
+</style>
+</head>
+
+<body>
+
+<!-- 🧊 OVERLAY DE ENTRADA -->
+<div id="intro-overlay" onclick="startExperience()">
+  <div class="intro-title">Registro</div>
+  <div class="intro-sub" id="intro-sub-text">toca para continuar</div>
+</div>
+
+<!-- 🌌 VIDEO BACKGROUND CROSSFADE (RUTAS CORREGIDAS A LA RAÍZ) -->
+<div class="video-background">
+  <video id="video1" class="bg-video visible" muted playsinline autoplay src="DiamaClouds.webm"></video>
+  <video id="video2" class="bg-video" muted playsinline src="DiamaClouds.webm"></video>
+  <div class="video-overlay"></div>
+</div>
+
+<!-- 🔊 PANEL DE AUDIO -->
+<div class="audio-control-panel">
+  <div class="volume-slider-container">
+    <input type="range" min="0" max="1" step="0.01" value="0.35" class="volume-slider" id="volumeControl" oninput="adjustVolume(this.value)">
+  </div>
+  <button class="mute-btn" id="muteButton" onclick="toggleMute()">
+    <svg viewBox="0 0 24 24" id="audioIcon">
+      <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+    </svg>
+  </button>
+</div>
+
+<!-- 🌐 IDIOMA -->
+<div id="language-selector">
+  <button class="lang-btn active" onclick="setLanguage('es')">ES</button>
+  <button class="lang-btn" onclick="setLanguage('en')">EN</button>
+</div>
+
+<div class="container">
+
+  <div class="brand-container">
+    <img src="Diama.png" alt="Diama Logo" class="logo-img" />
+    <span class="part-x">X</span>
+    <img src="Prrts.png" alt="Prrts Logo" class="logo-img" />
+  </div>
+
+  <p class="subtitle" id="sub-title">REGISTRO DE EVENTO</p>
+
+  <form id="registrationForm">
+    <div class="input-group">
+      <label id="lbl-name">Nombre Completo</label>
+      <input type="text" name="Nombre Completo" id="name" required autocomplete="off">
+    </div>
+
+    <div class="input-group">
+      <label id="lbl-email">Correo Electrónico <span class="optional-mark" id="opt-email">(Opcional)</span></label>
+      <input type="email" name="Email" id="email" autocomplete="off">
+    </div>
+
+    <div class="input-group">
+      <label id="lbl-phone">Número de Teléfono <span class="optional-mark" id="opt-phone">(Opcional)</span></label>
+      <input type="tel" name="Telefono" id="phone" autocomplete="off">
+    </div>
+
+    <button type="submit" id="btn-submit">Generar Registro</button>
+  </form>
+
+  <!-- 🎟️ CONFIRMACIÓN / TICKET INMERSIVO -->
+  <div class="ticket" id="ticket">
+    <h2 id="tkt-header">REGISTRO EXITOSO</h2>
+
+    <div class="row">
+      <div class="title" id="tkt-folio">Folio</div>
+      <div class="value" id="folioText"></div>
+    </div>
+
+    <div class="row">
+      <div class="title" id="tkt-name">Nombre completo</div>
+      <div class="value" id="nameText"></div>
+    </div>
+
+    <div class="row">
+      <div class="title" id="tkt-date">Fecha del evento</div>
+      <div class="value" id="tkt-date-val">SÁBADO 13 DE JUNIO DEL 2026</div>
+    </div>
+
+    <div class="row">
+      <div class="title" id="tkt-status">Estado</div>
+      <div class="value" id="tkt-status-val">REGISTERED</div>
+    </div>
+
+    <div class="row">
+      <div class="title" id="tkt-entry">Costo en puerta</div>
+      <div class="value" id="tkt-entry-val">$80 MXN</div>
+    </div>
+
+    <div class="notice" id="tkt-notice">
+      Presenta este registro en la entrada.<br><br>
+      Toma una captura de pantalla y guárdala hasta el evento.
+    </div>
+  </div>
+
+</div>
+
+<script>
+// 🎬 BG VIDEO CROSSFADE
+const v1 = document.getElementById('video1');
+const v2 = document.getElementById('video2');
+let currentVideo = v1;
+let nextVideo = v2;
+
+v1.play().catch(()=>{});
+
+setInterval(() => {
+  nextVideo.currentTime = 0;
+  nextVideo.play().then(() => {
+    currentVideo.classList.remove('visible');
+    nextVideo.classList.add('visible');
+    let temp = currentVideo;
+    currentVideo = nextVideo;
+    nextVideo = temp;
+  }).catch(()=>{});
+}, 10000);
+
+// 🎵 AUDIO ENGINE (RUTA AL ARCHIVO EN LA RAÍZ)
+let audioCtx = null;
+let audioBuffers = [];
+let gainNodeNode = null;
+let masterVolume = 0.35; 
+let isMuted = false;
+let experienceStarted = false;
+let loopTimeout = null;
+let activeSources = [];
+
+const audioUrl = "Interfaz Sound.mp3";
+
+async function initAudioEngine() {
+  if (audioCtx) return; 
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  gainNodeNode = audioCtx.createGain();
+  gainNodeNode.gain.setValueAtTime(masterVolume, audioCtx.currentTime);
+  gainNodeNode.connect(audioCtx.destination);
+
+  try {
+    const response = await fetch(audioUrl);
+    const arrayBuffer = await response.arrayBuffer();
+    audioBuffers[0] = await audioCtx.decodeAudioData(arrayBuffer);
+    scheduleNextLoop(0);
+  } catch (e) {
+    console.error("Error de audio:", e);
+  }
+}
+
+function scheduleNextLoop(delaySeconds) {
+  if (!audioBuffers[0] || !experienceStarted) return;
+
+  const buffer = audioBuffers[0];
+  const duration = buffer.duration;
+  const source = audioCtx.createBufferSource();
+  source.buffer = buffer;
+
+  const localGain = audioCtx.createGain();
+  source.connect(localGain);
+  localGain.connect(gainNodeNode);
+
+  const startTime = audioCtx.currentTime + delaySeconds;
+  source.start(startTime);
+  activeSources.push(source);
+
+  const crossfadeDuration = 2.0; 
+  const nextLoopTriggerTime = duration - crossfadeDuration;
+
+  localGain.gain.setValueAtTime(1, startTime + nextLoopTriggerTime);
+  localGain.gain.linearRampToValueAtTime(0, startTime + duration);
+
+  source.onended = () => {
+    activeSources = activeSources.filter(s => s !== source);
+    source.disconnect();
+    localGain.disconnect();
+  };
+
+  if (loopTimeout) clearTimeout(loopTimeout);
+  loopTimeout = setTimeout(() => {
+    scheduleNextLoop(0);
+  }, nextLoopTriggerTime * 1000);
+}
+
+function startExperience() {
+  experienceStarted = true;
+  document.getElementById('intro-overlay').classList.add('fade-out');
+  initAudioEngine();
+}
+
+function adjustVolume(val) {
+  masterVolume = parseFloat(val);
+  if (isMuted && masterVolume > 0) { isMuted = false; updateMuteIcon(false); }
+  if (gainNodeNode && audioCtx) {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    gainNodeNode.gain.setValueAtTime(masterVolume, audioCtx.currentTime);
+  }
+}
+
+function toggleMute() {
+  isMuted = !isMuted;
+  const slider = document.getElementById('volumeControl');
+  if (isMuted) {
+    if (gainNodeNode && audioCtx) gainNodeNode.gain.setValueAtTime(0, audioCtx.currentTime);
+    slider.value = 0;
+    updateMuteIcon(true);
+  } else {
+    if (masterVolume === 0) masterVolume = 0.35; 
+    if (gainNodeNode && audioCtx) {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      gainNodeNode.gain.setValueAtTime(masterVolume, audioCtx.currentTime);
+    }
+    slider.value = masterVolume;
+    updateMuteIcon(false);
+  }
+}
+
+function updateMuteIcon(muted) {
+  const icon = document.getElementById('audioIcon');
+  if (muted) {
+    icon.innerHTML = '<path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.21.05-.42.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>';
+  } else {
+    icon.innerHTML = '<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>';
+  }
+}
+
+// 🌐 TRANSLATIONS
+let currentLang = 'es';
+const translations = {
+  es: {
+    introSub: 'toca para continuar', subTitle: 'REGISTRO DE EVENTO', lblName: 'Nombre Completo',
+    lblEmail: 'Correo Electrónico ', lblPhone: 'Número de Teléfono ', opt: '(Opcional)',
+    btnSubmit: 'Generar Registro', tktHeader: 'REGISTRO EXITOSO', tktFolio: 'Folio',
+    tktName: 'Nombre completo', tktDate: 'Fecha del evento', tktDateVal: 'SÁBADO 13 DE JUNIO DEL 2026',
+    tktStatus: 'Estado', tktEntry: 'Costo en puerta',
+    tktNotice: 'Presenta este registro en la entrada.<br><br>Toma una captura de pantalla y guárdala hasta el evento.'
+  },
+  en: {
+    introSub: 'tap to continue', subTitle: 'EVENT REGISTRATION', lblName: 'Full Name',
+    lblEmail: 'Email Address ', lblPhone: 'Phone Number ', opt: '(Optional)',
+    btnSubmit: 'Generate Registration', tktHeader: 'SUCCESSFUL REGISTRATION', tktFolio: 'Folio/Ticket ID',
+    tktName: 'Full Name', tktDate: 'Event Date', tktDateVal: 'SATURDAY, JUNE 13, 2026',
+    tktStatus: 'Status', tktEntry: 'Door price',
+    tktNotice: 'Show this ticket confirmation at the entrance.<br><br>Take a screenshot and keep it safe until the event.'
+  }
+};
+
+function setLanguage(lang) {
+  currentLang = lang;
+  document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+  event.target.classList.add('active');
+  const t = translations[lang];
+  document.getElementById('intro-sub-text').innerText = t.introSub;
+  document.getElementById('sub-title').innerText = t.subTitle;
+  document.getElementById('lbl-name').firstChild.textContent = t.lblName;
+  document.getElementById('lbl-email').innerHTML = `${t.lblEmail} <span class="optional-mark">${t.opt}</span>`;
+  document.getElementById('lbl-phone').innerHTML = `${t.lblPhone} <span class="optional-mark">${t.opt}</span>`;
+  document.getElementById('btn-submit').innerText = t.btnSubmit;
+  document.getElementById('tkt-header').innerText = t.tktHeader;
+  document.getElementById('tkt-folio').innerText = t.tktFolio;
+  document.getElementById('tkt-name').innerText = t.tktName;
+  document.getElementById('tkt-date').innerText = t.tktDate;
+  document.getElementById('tkt-date-val').innerText = t.tktDateVal;
+  document.getElementById('tkt-status').innerText = t.tktStatus;
+  document.getElementById('tkt-entry').innerText = t.tktEntry;
+  document.getElementById('tkt-notice').innerHTML = t.tktNotice;
+}
+
+// 🎫 ENVÍO AJAX EN SEGUNDO PLANO
+document.getElementById('registrationForm').addEventListener('submit', function(e) {
+  e.preventDefault(); 
+  
+  const nameVal = document.getElementById('name').value;
+  const emailVal = document.getElementById('email').value;
+  const phoneVal = document.getElementById('phone').value;
+  
+  // Genera el folio
+  const randomFolio = "DIA-" + Math.floor(100000 + Math.random() * 900000);
+  
+  // Rellena la UI del Ticket de inmediato
+  document.getElementById('folioText').innerText = randomFolio;
+  document.getElementById('nameText').innerText = nameVal.toUpperCase();
+  
+  // Transición visual instantánea
+  this.style.display = 'none';
+  document.getElementById('sub-title').style.display = 'none';
+  document.getElementById('ticket').style.display = 'block';
+
+  // Estructura de datos exacta para tu Formspree
+  const formData = new FormData();
+  formData.append('Nombre Completo', nameVal);
+  formData.append('Email', emailVal);
+  formData.append('Telefono', phoneVal);
+  formData.append('Folio Asignado', randomFolio); 
+
+  // Petición silenciosa directa a tu endpoint activo
+  fetch('https://formspree.io/f/mojopygz', {
+    method: 'POST',
+    body: formData,
+    headers: { 'Accept': 'application/json' }
+  })
+  .then(res => { if (res.ok) console.log('Datos sincronizados correctamente en Formspree.'); })
+  .catch(err => console.error('Error de sincronización:', err));
+});
+</script>
+
+</body>
+</html>
